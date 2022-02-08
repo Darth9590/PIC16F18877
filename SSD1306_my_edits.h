@@ -232,6 +232,11 @@ void SSD1306_Init(){
     I2C_Command(SETDISPLAYOFFSET);     // 0xD3 Sets display RAM start line 0 - 63 with 0b00000
                                        // Example to move COM 16 to COM 0, 0b10000 || 0x10
     I2C_Command(0x00); //Offset is COM0
+    I2C_Command(MEMORYMODE); // Set addressing mode 00b Horizontal ~ 01b Vertical ~ 10 Page adressing
+    I2C_Command(0x02);              // Set for page addressing
+                                    // steps: Set the page start address with command 0xB0 to 0xB7
+                                    // Set the lower start column address of pointer with command 0x00 to 0x0F LOWER NIBBLE
+                                    // Set the upper start column address of pointer by command 0x10 to 0x1F UPPER NIBBLE
     I2C_Command(SETSTARTLINE);     //Sets display RAM start line register from 0-63
                                    // opcode is 0x40 to 0x7F which looks like 0b01XXXXX test
     I2C_Command(SEGREMAP);     // 0xA0 Wll map SEG0 (RESET) to either column address 0 (0xA0) or column address 127 (0xA1)
@@ -271,12 +276,13 @@ void ClearDisplay(){
                
 }
 
-void GotoXT(uint8_t x, uint8_t y){
- 
-    if((x > 21) || y > 8)
-        return;
-    x_pos = x;
-    y_pos = y;
+void GotoXY(uint8_t row, uint8_t column){
+
+  I2C_Command(0xB0 + row); // Start Address
+  I2C_Command(0x00 +  column)); // There are 128 columns and you have to set the upper and lower nibble of the byte
+                                // thus COL 45 would be 0b0010 1101 = 0x02 & 0x0D
+                                // user inputs 45 for column, 0x2D need to extract lower nibble and upper nibble somehow
+
 }
 
 void PutC(uint8_t c) {
