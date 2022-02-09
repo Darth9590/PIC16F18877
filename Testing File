@@ -9,7 +9,6 @@ void main(){
   printf("You entered %X", col);
 
  // Lower nibble between 0x00 to 0x0F
- // If I input anything that is 0x0F I can just add
   uint8_t lower_nibble = (col & 0x0F);
   printf("Lower nibble is: %X", lower_nibble);
   uint8_t upper_nibble = (col & 0xF0);
