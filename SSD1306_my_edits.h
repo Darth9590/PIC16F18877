@@ -278,10 +278,27 @@ void ClearDisplay(){
 
 void GotoXY(uint8_t row, uint8_t column){
 
+
+// ============================ Page Addressing =========================== //
+// Example from data sheet: Want to write PAGE2 Column 3
+// Write 0xB2 (PAGE2)
+// Write lower start aka lower nibble 0x03
+// Write upper start aka upper nibble 0x10
+// In binary it looks like this 1 0000 0011
+// Basically for the upper start, the upper nibble is ignored
+// My own example Column 96
+// Lower nibble = 0x06
+// Upper nibble = 0x19
+// Binary looks like 1 1001 0110
+// ====================================================================== //
+
+  uint8_t lower_nibble =(column & 0x0F);
+  uint8_t upper_nibble = (column & 0xF0);
+  uint8_t upper_final = ((upper_nibble >>= 4) + 0x10);
+
   I2C_Command(0xB0 + row); // Start Address
-  I2C_Command(0x00 +  column)); // There are 128 columns and you have to set the upper and lower nibble of the byte
-                                // thus COL 45 would be 0b0010 1101 = 0x02 & 0x0D
-                                // user inputs 45 for column, 0x2D need to extract lower nibble and upper nibble somehow
+  I2C_Command(0x00 + lower_nibble);
+  I2C_Command(0x00 + upper_final);
 
 }
 
