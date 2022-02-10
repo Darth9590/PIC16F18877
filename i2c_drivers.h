@@ -42,7 +42,7 @@ void I2C_Init(void){
 void I2C_Idle_Check(void){
     
     while((SSP1STAT = 0x04) || (SSP1CON2 = 0x1f));
-    
+
     /* Bit 2 of SSP1STAT is R/W and OR with SSPxCON2 SEN, RSEN, PEN, RCEN and ACKEN 
      * will indicate if the MSSP in is IDEL mode */
         
