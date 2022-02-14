@@ -5,6 +5,8 @@ uint8_t Binarray[80];
 uint8_t NewBin[80];
 int array_size = 80;
 int Position = 0;
+int Reverse_Pos = 0;
+int LowerLimit = 0;
 
 uint8_t Font[10] ={
     0x15, 0x62, 0xA0, 0xF2, 0xE4,
@@ -23,24 +25,36 @@ int main(){
             Binarray[a] = ((value & i)?'1':'0');
             printf("%c", Binarray[a]);
         }
-        printf("\n");
+        //printf("\n");
     }
 
 
     a = 0, c = 0, d = 0; /* Initalize Variables */
 
     /* Loop to reverse first 8 bits and place into new array */
-    for(i = 7; i >= 0 && i < 80; i--){
 
-        NewBin[a] = Binarray[i];
+    Reverse_Pos = 7;
+    for(;Reverse_Pos < 80;){
+
+        for(i = Reverse_Pos; i >= LowerLimit && i < 80; i--){
+
+        NewBin[a] = Binarray[i]; /* A never goes above 8 */
         a++;
+        }
+        c++;
+        Reverse_Pos = ((8 * c) - 1);
+        LowerLimit = (8 * c);
+
+        printf("\nReverse: %d\nLowerLimit: %d\n%d\n", Reverse_Pos, LowerLimit, a);
     }
+
+    /* Need to increase the above loop by 8 bits each time */
 
     Position = 7; /* Sets starting position */
     /* Loop to remove the first 8 bits from the array Binarray so we can only reverse 8 bits
      * at a time for the above loop */
 
-    for(;c < 8; c++){ /* loop 8 times, starts at 0 */
+    for(c = 0;c < 8; c++){ /* loop 8 times, starts at 0 */
 
         /* This loop removes one position at a time then proceeds to shift everything in the array down */
         for(; Position < 80 ; Position++){ /* For positon that is less then 80 (size of array) */
@@ -52,11 +66,11 @@ int main(){
         }
 
     printf("\n\n");
-    for(int b = 0; b < 8; b++){
+    for(int b = 0; b < 80; b++){
         printf("%c",Binarray[b]);
     }
     printf("\n");
-    for(int b = 0; b < 8; b++){
+    for(int b = 0; b < 80; b++){
         printf("%c",NewBin[b]);
     }
     printf("\n");
