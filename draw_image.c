@@ -25,7 +25,7 @@ uint8_t Font[ARRAY_SIZE] ={
 
 
 int main(){
-    int a, c = 0 , i;
+    int a, c, d, i;
 
     /* For loop, assigns Font[number] to value. Then ANDs value and 0x80 to get 8th place
      *Conintues to shift bit right by one bit and stops when i hits 0 */
@@ -59,29 +59,55 @@ int main(){
         c++; // Increment c by one for next loop
 
     }
-
-     for( a = 0; a < ARRAY_SIZE; a++ ){
-         for(c = 0, i = 0; c < ROW_SIZE; ){
-
+    /* Initalize all variables for the upcoming for loops.
+     * a counts how many times we go through the array
+     * i tells where in the array we print
+     * c keeps track of how many times we are printing and will \n every 5 thus needs to be 1 to start
+     * d keeps track of which if statement we need to be so i is assigned to the correct value */
+    int lower_mult = 1;
+    int upper_mult = 2;
+    int bin_i_array[7] = {1, 2, 3, 4, 5, 6, 7};
+    uint8_t bin_i;
+     for( a = 0, i = 0, c = 1, d = 0; a < ARRAY_SIZE; a++ ){
+         for(; d < ROW_SIZE; c++, d++, i += 8 ){
              printf("%c", NewBin[i]);
-             c++;
-             i += 8;
+           // printf(" i %d c %d ", i, c);
+                 if( c % 5 == 0 ){
+                     printf("\n");
+
+                 }
 
          }
-         printf("\n %d %d ", i, c);
+         //printf(" %d %d", lower_mult, upper_mult);
+         bin_i = bin_i_array[6];
+         //printf("%d", i);
+         for(int x = 6; d >= (ROW_SIZE * lower_mult) && d < (ROW_SIZE * upper_mult ) && d < ARRAY_SIZE; c++, d++, i = bin_i){
+            printf("%c", NewBin[i]);
+           //  printf(" %d  ", i);
+            if( c % 5 ==0 ){
+                printf("\n");
+
+            }
+                     // printf(" %d  ", i);
+//printf("\n%d %d\n", ROW_SIZE * upper_mult, d);
+
+            if( d == (ROW_SIZE * upper_mult)){
+             //   printf(" %d ", d);
+                lower_mult += 1;
+                upper_mult += 1;
+                bin_i = bin_i_array[--x];
+            }
+         }
      }
 
 
-    printf("\n\n");
-   /* for(int b = 0; b < ARRAY_SIZE; b++){
+
+   /* printf("\n\n");
+     for(int b = 0; b < ARRAY_SIZE; b++){
         printf("%c",Binarray[b]);
-    }
-    printf("\n");
+    }*/
+   /* printf("\n");
     for(int b = 0; b < ARRAY_SIZE; b++){
         printf("%c",NewBin[b]);
-    }
-    printf("\n\n");
-    for(a = 0; a < ARRAY_SIZE; a++){
-        uint8_t value = NewBin[a];
-          } */
-    }
+    }*/
+}
