@@ -1,27 +1,28 @@
 #include <stdio.h>
 #include <stdint.h>
+#include <stdbool.h>
 
 /* ======= DEFINES ========= */
-#define ARRAY_SIZE 80
+#define ARRAY_SIZE 40
 #define ROW_SIZE 5
 
 
 /* ========= Global Variables =========== */
 uint8_t Binarray[ARRAY_SIZE];
 uint8_t NewBin[ARRAY_SIZE];
+char Final_image[ARRAY_SIZE];
 int Position = 0;
 int LowerLimit = 0;
 
 /* Array size is 16 bits for each hex value * 5 * row
  * Example: 0x15, 0x62, 0xA0, 0xF2, 0xE4,
-           0x2C, 0x00, 0x5F, 0x08, 0xAA,
 
- * 8 * 5 * 2 = */
+ * 8 * 5  = 40 */
 
+
+/* Your font goes here */
 uint8_t Font[ARRAY_SIZE] ={
-0x14, 0x14, 0x14, 0x14, 0x14,
-0x7F, 0x41, 0x41, 0x41, 0x3E,
-};
+0x61, 0x51, 0x49, 0x45, 0x43,};
 
 
 int main(){
@@ -59,55 +60,77 @@ int main(){
         c++; // Increment c by one for next loop
 
     }
+    /* Takes the reversed array and makes it look nice by repalcing 1s and 0s with blanks and stars */
+    for(i = 0; i < ARRAY_SIZE; i++){
+        if( NewBin[i] == '0' ){
+            Final_image[i] = ' ';
+        }
+        else if( NewBin[i] == '1' ){
+            Final_image[i] = '*';
+        }
+       // printf("%c", Final_image[i] );
+    }
+
     /* Initalize all variables for the upcoming for loops.
      * a counts how many times we go through the array
      * i tells where in the array we print
      * c keeps track of how many times we are printing and will \n every 5 thus needs to be 1 to start
      * d keeps track of which if statement we need to be so i is assigned to the correct value */
-    int lower_mult = 1;
-    int upper_mult = 2;
-    int bin_i_array[7] = {1, 2, 3, 4, 5, 6, 7};
-    uint8_t bin_i;
-     for( a = 0, i = 0, c = 1, d = 0; a < ARRAY_SIZE; a++ ){
-         for(; d < ROW_SIZE; c++, d++, i += 8 ){
-             printf("%c", NewBin[i]);
-           // printf(" i %d c %d ", i, c);
-                 if( c % 5 == 0 ){
-                     printf("\n");
+    int lower_limit = 1;
+    int upper_limit = 2;
+    int reset_i = 1;
+    bool flag_i = false; // Used to reset i
+     /* for loop while less then array size we increase a by 1 each iteration
+       * purpose of for loop is to print out LSB first left to right
+       * essentially we flipped it from little endian to big. Since we want to print each
+       * first bit of the byte, we add 8 to i.  */
+    for( a = 0, i = 0, c = 1, d = 0; a < ARRAY_SIZE; a++ ){
+         for(; d < ROW_SIZE; c++, d++, i += 8 ){ // for loop where d is size of row IE character width
+             printf("%c", Final_image[i]);
+            if( c % ROW_SIZE == 0 ){ // have we hit the end of row
+                printf("\n"); // New line
 
                  }
 
          }
-         //printf(" %d %d", lower_mult, upper_mult);
-         bin_i = bin_i_array[6];
-         //printf("%d", i);
-         for(int x = 6; d >= (ROW_SIZE * lower_mult) && d < (ROW_SIZE * upper_mult ) && d < ARRAY_SIZE; c++, d++, i = bin_i){
-            printf("%c", NewBin[i]);
-           //  printf(" %d  ", i);
-            if( c % 5 ==0 ){
-                printf("\n");
+
+         /* The above for loops can only hand the first bit of the byte. These loops handle the rest
+           * of translation. X is added which keeps track of when we hit 5 bits for a new line. X is added
+           * to reset_i which starts it over but at the next bit. Have to inlcude a flag to -8 since the for
+           * loop adds 8 */
+         for(int x = 0, i = 1;
+             /* upper and lower limit keep the loop to the contained byte I want to transpose */
+             d >= (ROW_SIZE * lower_limit) && d < (ROW_SIZE * upper_limit ) && d < ARRAY_SIZE;
+             c++, d++, i += 8){
+             /* Flag event to cancel out the + 8 */
+             if( flag_i == true ){
+                 i -= 8;
+                 flag_i = false;
+             }
+             printf("%c", Final_image[i]); // Print the array
+            if( c % 5 ==0 ){ // have we hit the end of row
+                printf("\n"); // New line
+                ++x;
+                i = (reset_i + x); // set i to the new value to start from
+                flag_i = true; // raise flag
 
             }
-                     // printf(" %d  ", i);
-//printf("\n%d %d\n", ROW_SIZE * upper_mult, d);
-
-            if( d == (ROW_SIZE * upper_mult)){
-             //   printf(" %d ", d);
-                lower_mult += 1;
-                upper_mult += 1;
-                bin_i = bin_i_array[--x];
+            /* if d + 1 since it starts at 0, equalts the upper limit then increase limits by one */
+            if( (d + 1) == (ROW_SIZE * upper_limit)){
+                lower_limit += 1;
+                upper_limit += 1;
             }
          }
      }
 
 
-
-   /* printf("\n\n");
+/* For debugging purpose */
+    /* printf("\n\n");
      for(int b = 0; b < ARRAY_SIZE; b++){
         printf("%c",Binarray[b]);
-    }*/
-   /* printf("\n");
+    }
+    printf("\n");
     for(int b = 0; b < ARRAY_SIZE; b++){
         printf("%c",NewBin[b]);
-    }*/
+    } */
 }
