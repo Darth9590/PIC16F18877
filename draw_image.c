@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdint.h>
+#include <stdbool.h>
 
 /* ======= DEFINES ========= */
 #define ARRAY_SIZE 80
@@ -66,48 +67,56 @@ int main(){
      * d keeps track of which if statement we need to be so i is assigned to the correct value */
     int lower_mult = 1;
     int upper_mult = 2;
-    int bin_i_array[7] = {1, 2, 3, 4, 5, 6, 7};
-    uint8_t bin_i;
-     for( a = 0, i = 0, c = 1, d = 0; a < ARRAY_SIZE; a++ ){
+    int reset_i = 1;
+    bool flag_i = false;
+    for( a = 0, i = 0, c = 1, d = 0; a < ARRAY_SIZE; a++ ){
          for(; d < ROW_SIZE; c++, d++, i += 8 ){
              printf("%c", NewBin[i]);
-           // printf(" i %d c %d ", i, c);
-                 if( c % 5 == 0 ){
-                     printf("\n");
+           //printf(" i %d c %d ", i, c);
+            if( c % 5 == 0 ){
+                printf("\n");
 
                  }
 
          }
          //printf(" %d %d", lower_mult, upper_mult);
-         bin_i = bin_i_array[6];
          //printf("%d", i);
-         for(int x = 6; d >= (ROW_SIZE * lower_mult) && d < (ROW_SIZE * upper_mult ) && d < ARRAY_SIZE; c++, d++, i = bin_i){
-            printf("%c", NewBin[i]);
-           //  printf(" %d  ", i);
+         for(int x = 0, i = 1;
+             d >= (ROW_SIZE * lower_mult) && d < (ROW_SIZE * upper_mult ) && d < ARRAY_SIZE;
+             c++, d++, i += 8){
+             if( flag_i == true ){
+                 i -= 8;
+             }
+            // printf("i %d ", i);
+             printf("%c", NewBin[i]);
+            //  printf("i %d x %d   ", i, x);
             if( c % 5 ==0 ){
                 printf("\n");
+                ++x;
+                i = (reset_i + x);
+               // printf("value of i: %d", i);
+                flag_i = true;
 
             }
                      // printf(" %d  ", i);
 //printf("\n%d %d\n", ROW_SIZE * upper_mult, d);
 
-            if( d == (ROW_SIZE * upper_mult)){
+            if( (d + 1) == (ROW_SIZE * upper_mult)){
              //   printf(" %d ", d);
                 lower_mult += 1;
                 upper_mult += 1;
-                bin_i = bin_i_array[--x];
             }
          }
      }
 
 
 
-   /* printf("\n\n");
+    printf("\n\n");
      for(int b = 0; b < ARRAY_SIZE; b++){
         printf("%c",Binarray[b]);
-    }*/
-   /* printf("\n");
+    }
+    printf("\n");
     for(int b = 0; b < ARRAY_SIZE; b++){
         printf("%c",NewBin[b]);
-    }*/
+    }
 }
