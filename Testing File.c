@@ -63,3 +63,4 @@ int main()
     }
     printf("\nEquivalent Binary value is : ");
 }
+//testing something
