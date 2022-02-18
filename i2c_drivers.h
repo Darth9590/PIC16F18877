@@ -1,4 +1,7 @@
-/*My I2C Drivers PIC16F18877*/
+/*RCJK I2C Drivers PIC16F18877*/
+
+#ifndef I2C_DRIVERS_H
+#define I2C_DRIVERS_H
 
 #include <stdint.h>
 #include <xc.h>
@@ -122,3 +125,5 @@ void I2C_Read(uint8_t ack){
     SSP1CON2bits_t.ACKEN = ack;
         
 }
+
+#endif
