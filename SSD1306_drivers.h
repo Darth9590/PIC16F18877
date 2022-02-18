@@ -122,7 +122,7 @@ bool wrap = true;
 
 const char Font[] = {
 0x00, 0x00, 0x00, 0x00, 0x00, // sp 32d
-0x00, 0x00, 0x00, 0x2f, 0x00, 0x00, // ! 33d
+0x00, 0x00, 0x2f, 0x00, 0x00, // ! 33d
 0x00, 0x07, 0x00, 0x07, 0x00, // " 34d
 0x14, 0x7f, 0x14, 0x7f, 0x14, // # 35d
 0x24, 0x2a, 0x7f, 0x2a, 0x12, // $ 36d
@@ -213,7 +213,7 @@ const char Font[] = {
 0x1C, 0xA0, 0xA0, 0xA0, 0x7C, // y 121d
 0x44, 0x64, 0x54, 0x4C, 0x44, // z 122d
 0x00, 0x08, 0x77, 0x00, 0x00, // { 123d
-0x00, 0x7F, 0x00, 0x00, // | 124d
+0x00, 0x7F, 0x00, 0x00, 0x00, // | 124d
 0x00, 0x77, 0x08, 0x00, 0x00, // } 125d
 0x10, 0x08, 0x10, 0x08, 0x00, // ~ 126d
                               };
@@ -370,10 +370,6 @@ uint8_t GotoXY(uint8_t row, uint8_t column){
 
 void PutC(uint8_t c){
 
-  uint8_t font_c;
-
-  if((c < ' ') || (c > '~')) // illegal characters?
-    c = '?';
   SSD1306_Command(COLUMNADDR); // Set start and stop column address two bytes
   SSD1306_Command(x_pos);      // Send the start which is x_pos from GOtoXY
   SSD1306_Command(x_pos + 5); // Send the stop which is x_pos + 5. One character takes 5 columns
@@ -382,7 +378,11 @@ void PutC(uint8_t c){
   SSD1306_Command(y_pos);
   SSD1306_Command(y_pos);
 
-  SSD1306_Data(c); // Write character to screen
-                   // TODO need to take ASCII character and find it on table and then write the 5 bytes
+
+  for(uint8_t i = 0; i < 5; i++ ){
+        uint8_t letter = Font[((c - 32) * 5 + i)];
+        SSD1306_Data(c); // Write character to screen
+  }
+
 
 }
