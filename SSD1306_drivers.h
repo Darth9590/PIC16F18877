@@ -47,7 +47,8 @@
  *    |_|_|_|_|
  *    |_|_|_|_| MSB D[7]
  *     */
-
+#ifndef SSD1306_DRIVERS_H
+#define SSD1306_DRIVERS_H
 
 #include <stdint.h>
 #include <stdbool.h>
@@ -386,3 +387,5 @@ void PutC(uint8_t c){
 
 
 }
+
+#endif
