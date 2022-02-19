@@ -268,38 +268,38 @@ void SSD1306_Data(uint8_t data){
  */
 
 void SSD1306_Init(){
-    SD1306_Command(DISPLAYOFF);     // 0xAE
-    SD1306_Command(SETMULTIPLEX);  // 0xA8
-    SD1306_Command(0x1F);     // Sets MUX to 31 for 128x32 OLED. This means PAGE0 to PAGE3
+    SSD1306_Command(DISPLAYOFF);     // 0xAE
+    SSD1306_Command(SETMULTIPLEX);  // 0xA8
+    SSD1306_Command(0x1F);     // Sets MUX to 31 for 128x32 OLED. This means PAGE0 to PAGE3
                            // PAGE0 (COM0-COM7)
                            // PAGE1 (COM8-COM15)
                            // PAGE2 (COM16-COM23)
                            // PAGE3 (COM24-COM31)
-    SD1306_Command(SETDISPLAYOFFSET);     // 0xD3 Sets display RAM start line 0 - 63 with 0b00000
+    SSD1306_Command(SETDISPLAYOFFSET);     // 0xD3 Sets display RAM start line 0 - 63 with 0b00000
                                        // Example to move COM 16 to COM 0, 0b10000 || 0x10
-    SD1306_Command(0x00); //Offset is COM0
-    SD1306_Command(MEMORYMODE); // Set addressing mode 00b Horizontal ~ 01b Vertical ~ 10 Page adressing
-    SD1306_Command(0x02);              // Set for page addressing
+    SSD1306_Command(0x00); //Offset is COM0
+    SSD1306_Command(MEMORYMODE); // Set addressing mode 00b Horizontal ~ 01b Vertical ~ 10 Page adressing
+    SSD1306_Command(0x02);              // Set for page addressing
                                     // steps: Set the page start address with command 0xB0 to 0xB7
                                     // Set the lower start column address of pointer with command 0x00 to 0x0F LOWER NIBBLE
                                     // Set the upper start column address of pointer by command 0x10 to 0x1F UPPER NIBBLE
-    SD1306_Command(SETSTARTLINE);     //Sets display RAM start line register from 0-63
+    SSD1306_Command(SETSTARTLINE);     //Sets display RAM start line register from 0-63
                                    // opcode is 0x40 to 0x7F which looks like 0b01XXXXX test
-    SD1306_Command(SEGREMAP);     // 0xA0 Wll map SEG0 (RESET) to either column address 0 (0xA0) or column address 127 (0xA1)
-    SD1306_Command(COMSCANCOM0);  // 0xC0 normal mode scan from COM0 to COM[N-1]
-    SD1306_Command(SETCOMPINS);  // 0xDA referenced page 44 in datasheet. opcode is 0b00XX0010. A[4]=0b sequential com pin configuration ~ A[4]=1b alernative come pin
+    SSD1306_Command(SEGREMAP);     // 0xA0 Wll map SEG0 (RESET) to either column address 0 (0xA0) or column address 127 (0xA1)
+    SSD1306_Command(COMSCANCOM0);  // 0xC0 normal mode scan from COM0 to COM[N-1]
+    SSD1306_Command(SETCOMPINS);  // 0xDA referenced page 44 in datasheet. opcode is 0b00XX0010. A[4]=0b sequential com pin configuration ~ A[4]=1b alernative come pin
                               // A[5]=0b Disable COM left/right remap ~ A[5]=1b Enable COM left/right remap
-    SD1306_Command(0x22);        // A[4]=0 A[5]=1
-    SD1306_Command(SETCONTRAST); // 0x81 double byte command, select 1 out of 256. 0x7F resets
-    SD1306_Command(0x7F);        // reset contrast
-    SD1306_Command(DISPLAYALLON); // 0xA5 Entire display ON output ignores the RAM content
-    SD1306_Command(NORMALDISPLAY); // 0xA6 for normal or 0xA7 for reverse. In normal, RAM data of 1 indicates an "ON" pixel while reverse a 0 indicates an "OFF" pixel
-    SD1306_Command(SETDISPLAYCLOCKDIV); // 0xD5 Display Clock Divide Ratio A[3:0] divide ration is 1 to 16.
+    SSD1306_Command(0x22);        // A[4]=0 A[5]=1
+    SSD1306_Command(SETCONTRAST); // 0x81 double byte command, select 1 out of 256. 0x7F resets
+    SSD1306_Command(0x7F);        // reset contrast
+    SSD1306_Command(DISPLAYALLON); // 0xA5 Entire display ON output ignores the RAM content
+    SSD1306_Command(NORMALDISPLAY); // 0xA6 for normal or 0xA7 for reverse. In normal, RAM data of 1 indicates an "ON" pixel while reverse a 0 indicates an "OFF" pixel
+    SSD1306_Command(SETDISPLAYCLOCKDIV); // 0xD5 Display Clock Divide Ratio A[3:0] divide ration is 1 to 16.
                                      // Oscillator frequency A[7:4] defualt value is 1000b.
-    SD1306_Command(0x80);        // dafualt value ~380kHz
-    SD1306_Command(CHARGEPUMP); // 0x8D A[2]=0b disbale charge pump A[2]=1b enable charge pump opcode 010X00b
-    SD1306_Command(0x14);        //enable charge pump
-    SD1306_Command(DISPLAYON);   //Display ON normal mode
+    SSD1306_Command(0x80);        // dafualt value ~380kHz
+    SSD1306_Command(CHARGEPUMP); // 0x8D A[2]=0b disbale charge pump A[2]=1b enable charge pump opcode 010X00b
+    SSD1306_Command(0x14);        //enable charge pump
+    SSD1306_Command(DISPLAYON);   //Display ON normal mode
     
     
 }
@@ -313,11 +313,11 @@ void SSD1306_Init(){
 
 void ClearDisplay(){
     
-    SD1306_Command(COLUMNADDR); // set start column
-    SD1306_Command(0);          // set SEG0
-    SD1306_Command(PAGEADDR);   // Set start row and end row 3bits A[2:0] range 0-7d B[2:0] 0-7d
-    SD1306_Command(0);          // PAGE0
-    SD1306_Command(3);          // End at PAGE3 for 32 row OLED
+    SSD1306_Command(COLUMNADDR); // set start column
+    SSD1306_Command(0);          // set SEG0
+    SSD1306_Command(PAGEADDR);   // Set start row and end row 3bits A[2:0] range 0-7d B[2:0] 0-7d
+    SSD1306_Command(0);          // PAGE0
+    SSD1306_Command(3);          // End at PAGE3 for 32 row OLED
     
     I2C_Start();          // Start bit
     I2C_Write(I2C_ADDRESS);   // write address of device
@@ -362,9 +362,9 @@ uint8_t GotoXY(uint8_t row, uint8_t column){
   x_pos = upper_nibble + lower_nibble;
   y_pos = row;
 
-  SD1306_Command(0xB0 + row); // Start PAGE Address
-  SD1306_Command(0x00 + lower_nibble); //Start lower nibble address
-  SD1306_Command(0x00 + upper_final); //Start upper nibble address
+  SSD1306_Command(0xB0 + row); // Start PAGE Address
+  SSD1306_Command(0x00 + lower_nibble); //Start lower nibble address
+  SSD1306_Command(0x00 + upper_final); //Start upper nibble address
 
 
 }

@@ -29,11 +29,11 @@ void I2C_Write(uint8_t I2C_data);
 void I2C_Init(void){
     
     TRISB = 0x06; /* Sets up RB1 SCL and RB2 SDA as inputs */
-    SSP1STATbits_t.SMP = 1;
-    SSP1STATbits_t.CKE = 0;
+    SSP1STATbits.SMP = 1;
+    SSP1STATbits.CKE = 0;
     SSP1ADD = 0x09; /* Sets I2C clock to 100kHz */
-    SSP1CON1bits_t.SSPEN = 1; /* Enables the SDA and SCL pins as source */
-    SSP1CON1bits_t.SSPM = 0x08; /* I2C Master Mode clock = Fosc / (4 * (SSP1ADD +1)) */
+    SSP1CON1bits.SSPEN = 1; /* Enables the SDA and SCL pins as source */
+    SSP1CON1bits.SSPM = 0x08; /* I2C Master Mode clock = Fosc / (4 * (SSP1ADD +1)) */
         
 }
 
@@ -61,7 +61,7 @@ void I2C_Idle_Check(void){
 void I2C_Start(void){
     
     I2C_Idle_Check();
-    SSP1CON2bits_t.SEN = 1;
+    SSP1CON2bits.SEN = 1;
     
 }
 
@@ -74,7 +74,7 @@ void I2C_Start(void){
 void I2C_Stop(void){
     
     I2C_Idle_Check();
-    SSP1CON2bits_t.PEN = 1;
+    SSP1CON2bits.PEN = 1;
     
 }
 
@@ -88,7 +88,7 @@ void I2C_Stop(void){
 void I2C_Restart(void){
     
     I2C_Idle_Check();
-    SSP1CON2bits_t.RSEN = 1;
+    SSP1CON2bits.RSEN = 1;
     
 }
 
@@ -103,8 +103,8 @@ void I2C_Write(uint8_t I2C_data){
     
     I2C_Idle_Check();
     SSP1BUF = I2C_data;
-    while(SSP1CON2bits_t.ACKSTAT != 0);
-    while(SSP1STATbits_t.BF != 0);
+    while(SSP1CON2bits.ACKSTAT != 0);
+    while(SSP1STATbits.BF != 0);
     
     }
 
@@ -119,10 +119,10 @@ void I2C_Read(uint8_t ack){
     
     uint8_t rx_data = 0;
     I2C_Idle_Check();
-    SSP1CON2bits_t.RCEN = 1;
-    while(SSP1STATbits_t.BF != 0);
+    SSP1CON2bits.RCEN = 1;
+    while(SSP1STATbits.BF != 0);
     rx_data = SSP1BUF;
-    SSP1CON2bits_t.ACKEN = ack;
+    SSP1CON2bits.ACKEN = ack;
         
 }
 
