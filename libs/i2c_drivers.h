@@ -8,6 +8,15 @@
 #include <stdio.h>
 #include <pic16f18877.h>
 
+// ========================== How the signal works ========================= //
+/*    SEN=1  SEN=0       ADDRESS                         R/W  ACK=0                 
+ *      ____      __    __    __    __    __    __    __    
+ * SDA |    |    |  |  |  |  |  |  |  |  |  |  |  |  |  |  
+ *     |    |____|A7|__|A6|__|A5|__|A4|__|A3|__|A2|__|A1|__________
+ 
+ 
+ */
+
 // ========================== Function Prototypes ========================== //
 
 void I2C_Init(void);
@@ -15,8 +24,10 @@ void I2C_Idle_Check(void);
 void I2C_Start(void);
 void I2C_Stop(void);
 void I2C_Restart(void);
-void I2C_Read(void);
+uint8_t I2C_Read(void);
 void I2C_Write(uint8_t I2C_data);
+void SPxIF_flag_polling(void);
+uint8_t I2C_ACK(void);
 
 
 /* Name: I2C_INIT
@@ -29,11 +40,16 @@ void I2C_Write(uint8_t I2C_data);
 void I2C_Init(void){
 
     TRISB = 0x06; /* Sets up RB1 SCL and RB2 SDA as inputs */
-    SSP1STATbits.SMP = 1;
-    SSP1STATbits.CKE = 0;
-    SSP1ADD = 0x09; /* Sets I2C clock to 100kHz */
-    SSP1CON1bits.SSPEN = 1; /* Enables the SDA and SCL pins as source */
-    SSP1CON1bits.SSPM = 0x08; /* I2C Master Mode clock = Fosc / (4 * (SSP1ADD +1)) */
+    SSP2STATbits.SMP = 1;
+    SSP2STATbits.CKE = 0;
+    SSP2ADD = 0x09; /* Sets I2C clock to 100kHz */
+    SSP2CON1bits.SSPEN = 1; /* Enables the SDA and SCL pins as source */
+    SSP2CON1bits.SSPM = 0x08; /* I2C Master Mode clock = Fosc / (4 * (SSP1ADD +1)) */
+    
+    SSP2DATPPS = 0x0A;   //RB2->MSSP2:SDA2; 
+    SSP2CLKPPS = 0x09;   //RB1->MSSP2:SCL2;
+    RB1PPS = 0x16;   //RB1->MSSP2:SCL2;    
+    RB2PPS = 0x17;   //RB2->MSSP2:SDA2; 
 
 }
 
@@ -44,7 +60,7 @@ void I2C_Init(void){
 
 void I2C_Idle_Check(void){
 
-    while((SSP1STAT == 0x04) || (SSP1CON2 == 0x1f));
+    while((SSP2STAT == 0x04) || (SSP2CON2 == 0x1f));
 
     /* Bit 2 of SSP1STAT is R/W and OR with SSPxCON2 SEN, RSEN, PEN, RCEN and ACKEN
      * will indicate if the MSSP in is IDEL mode */
@@ -61,7 +77,9 @@ void I2C_Idle_Check(void){
 void I2C_Start(void){
 
     I2C_Idle_Check();
-    SSP1CON2bits.SEN = 1;
+    SSP2CON2bits.SEN = 1;
+    while(SSP2CON2bits.SEN == 1);
+    SPxIF_flag_polling();
 
 }
 
@@ -74,7 +92,9 @@ void I2C_Start(void){
 void I2C_Stop(void){
 
     I2C_Idle_Check();
-    SSP1CON2bits.PEN = 1;
+    SSP2CON2bits.PEN = 1;
+    SPxIF_flag_polling();
+         
 
 }
 
@@ -88,7 +108,7 @@ void I2C_Stop(void){
 void I2C_Restart(void){
 
     I2C_Idle_Check();
-    SSP1CON2bits.RSEN = 1;
+    SSP2CON2bits.RSEN = 1;
 
 }
 
@@ -102,8 +122,12 @@ void I2C_Restart(void){
 void I2C_Write(uint8_t I2C_data){
 
     I2C_Idle_Check();
-    SSP1BUF = I2C_data;
-    while(SSP1STATbits.BF == 1);
+    SSP2BUF = I2C_data;
+    while(SSP2STATbits.BF == 1);
+    SPxIF_flag_polling();
+    if(I2C_ACK()){
+        return;
+    }
     
     }
 
@@ -114,15 +138,33 @@ void I2C_Write(uint8_t I2C_data){
  *  notACK to ACKSTAT CON2 register. Set the RCEN bit of CON2. After 8th edge,
  * SSPxIF and BF are set.  Master sets ACK in ACKDT bit of CON2 and initiates the
  * ACK be setting ACKEN bit. */
-void I2C_Read(uint8_t ack){
+uint8_t I2C_Read(void){
 
     uint8_t rx_data = 0;
-    I2C_Idle_Check();
-    SSP1CON2bits.RCEN = 1;
-    while(SSP1STATbits.BF != 0);
+    SSP2CON2bits.RCEN = 1;
+    while(SSP2STATbits.BF == 0);
     rx_data = SSP1BUF;
-    SSP1CON2bits.ACKEN = ack;
-
+    SPxIF_flag_polling();
+    SSP2CON2bits.ACKDT = 0;
+   // SPxIF_flag_polling();
+    return rx_data;
 }
 
+/* Name: SPxIF_flag_polling
+ * Parameter: void
+ * Return: nothing
+ * Description: Clears the interrupt flag */
+
+void SPxIF_flag_polling(void){
+
+    while(!PIR3bits.SSP2IF){
+ 
+    }
+    
+    PIR3bits.SSP2IF = 0;
+}
+
+uint8_t I2C_ACK(){
+    return SSP2CON2bits.ACKSTAT;
+}
 #endif
