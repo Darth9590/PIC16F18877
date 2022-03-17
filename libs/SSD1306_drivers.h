@@ -82,7 +82,7 @@ void PutC(uint8_t c);
 #define DISPLAYALLON_RESUME  0xA4
 #define DISPLAYALLON         0xA5
 #define NORMALDISPLAY        0xA6
-#define INVERTDISPLAY_       0xA7
+#define INVERTDISPLAY        0xA7
 #define DISPLAYOFF           0xAE
 #define DISPLAYON            0xAF
 #define SETDISPLAYOFFSET     0xD3

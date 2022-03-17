@@ -159,7 +159,7 @@ uint8_t GotoXY(uint8_t row, uint8_t column){
 
 }
 
-void PutC(uint8_t *c){
+void PutC(uint8_t c){
 
   SSD1306_Command(COLUMNADDR); // Set start and stop column address two bytes
   SSD1306_Command(x_pos);      // Send the start which is x_pos from GOtoXY
@@ -171,7 +171,7 @@ void PutC(uint8_t *c){
 
 
   for(uint8_t i = 0; i < 5; i++ ){
-        uint8_t letter = Font[((*c - 32) * 5 + i)];
+        uint8_t letter = Font[((c - 32) * 5 + i)];
         SSD1306_Data(letter); // Write character to screen
   }
 
