@@ -19,6 +19,6 @@ What it looks like:
 ![image](https://user-images.githubusercontent.com/60046091/155479223-96e0adf2-dc60-48e2-9e02-777e40fc0c44.png)
 ![image](https://user-images.githubusercontent.com/60046091/155479267-9b27d0a4-288d-4a5b-9b63-cd9761c1b0f6.png)
 
-### I2C_drivers.h - My attempt at I2C communication, currently not working on PIC16F18877. 
+### I2C_drivers.h/C - My attempt at I2C communication, currently WORKING on PIC16F18877. 
 
 Anyone can feel free to use. 
