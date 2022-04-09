@@ -21,4 +21,8 @@ What it looks like:
 
 ### I2C_drivers.h/C - My attempt at I2C communication, currently WORKING on PIC16F18877. 
 
+# EEPORM GUI
+Created a front end gui for wrtiing to EEPROM. There are still some bugs but overall works fine, just have to reset ucotnroller and eeprom. Will re visit another day. 
+I made three wroking functions, a read/write byte, read page and write page. One pages is 32 bytes. 
+I also included some functions for I found that with serial since it is ASCII and MPLAB seemed to limit me in scanF %X, I had to convert ASCII to HEX manually. I think this is becuase I used thier library for UART. 
 Anyone can feel free to use. 
