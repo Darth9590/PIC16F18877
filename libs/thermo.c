@@ -1,4 +1,14 @@
 #include "thermo.h"
+#include <stdint.h>
+#include <stdio.h>
+/***************************************************************************
+ ============================= Device Information ==========================
+ ***************************************************************************/
+/* 12 bit ADC
+ * temperature resolution 0.625 C
+ * Update rate 80mS
+ * conversion time of one-shot 27mS
+ */
 
 
 /***************************************************************************
@@ -61,3 +71,18 @@ _    __    __    __    __    __    __    __    __
  |__|  |__|  |__|  |__|  |__|  |__|  |__|  |__|  |_____/
 
 */
+
+int main (){
+
+uint8_t coninue = 0x01;
+uint8_t tm = 0x00;
+uint8_t pol = 0x04;
+uint8_t fq = 0x00;
+uint8_t os = 0x20;
+
+uint16_t value = (POL + OS + FQ6);
+printf( "%X", value );
+uint16_t value2 = value <<8;
+printf( "\n%X\n", value2 );
+
+}

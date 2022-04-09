@@ -1,0 +1,378 @@
+WindowManager:
+    MainWindow:
+    ByteWrite:
+    PageWrite:
+    CurrentAddr:
+    RandomRead:
+    SequentialRead:
+
+<MDRectangleFlatButton>
+    text_color: 0.17, 0.52, 0.35 , 1.0
+    font_size: 22
+<MDTextField>
+    max_text_length: 2
+    multiline: False
+    helper_text_mode: "on_focus"
+    helper_text: "Hex value"
+
+<MainWindow>:
+    name: "mainwindow"
+
+    BoxLayout:
+        orientation: "vertical"
+        size: root.width, root.height
+        spacing: "10dp"
+
+        Label:
+            id: title_label
+            text: "Fear is the Mind Killer"
+            font_size: 45
+            size_hint_x: 1
+            size_hint_y: 0.5
+            valign: "top"
+            bold: True
+            outline_color: (0,1,0)
+            outline_width: 5
+            color: (0,0,0)
+
+        MDBoxLayout:
+            orientation: "horizontal"
+            padding: "10dp"
+            spacing: "10dp"
+
+            MDBoxLayout:
+                orientation: "vertical"
+                padding: "20dp"
+                spacing: "20dp"
+
+                MDBoxLayout:
+                    orientation: "vertical"
+                    padding: "25dp"
+                    md_bg_color:    0.29, 0.29, .29, 0.2
+                    pos_hint: {"center_x": .5}
+                    size_hint:(0.7, 0.7)
+
+                    MDRectangleFlatButton:
+                        id: byte_btn
+                        on_press:
+                            app.root.current = "byte_write"
+                        text: "Write/Read Byte"
+
+                MDBoxLayout:
+                    orientation: "vertical"
+                    padding: "25dp"
+                    md_bg_color: 0.29, 0.29, .29, 0.2
+                    pos_hint: {"center_x": .5}
+                    size_hint:(0.55, 0.7)
+
+                    MDRectangleFlatButton:
+                        id: page_btn
+                        text: "Write Page"
+                        on_press: app.root.current = "page_write"
+
+                MDBoxLayout:
+                    orientation: "vertical"
+                    padding: "25dp"
+                    md_bg_color: 0.29, 0.29, .29, 0.2
+                    pos_hint: {"center_x": .5}
+                    size_hint:(0.7, 0.7)
+
+
+                    MDRectangleFlatButton:
+                        id: current_btn
+                        text: "Current Address"
+                        on_press: app.root.current = "curr_addr"
+
+            MDBoxLayout:
+                orientation: "vertical"
+                padding: "20dp"
+                spacing: "20dp"
+
+                MDBoxLayout:
+                    orientation: "vertical"
+                    padding: "25dp"
+                    md_bg_color: 0.29, 0.29, 0.29, 0.2
+                    pos_hint: {"center_x": .5}
+                    size_hint:(0.7, 0.7)
+
+                    MDRectangleFlatButton:
+                        id: sequential_btn
+                        text: "Sequential Read"
+                        on_press: app.root.current = "seq_read"
+
+                MDBoxLayout:
+                    orientation: "vertical"
+                    size_hint:(0.7, 1)
+
+                MDBoxLayout:
+                    orientation: "vertical"
+                    padding: "25dp"
+                    md_bg_color: 0.29, 0.29, .29, 0.2
+                    pos_hint: {"center_x": .5}
+                    size_hint:(0.6, 0.7)
+
+                    MDRectangleFlatButton:
+                        id: exit
+                        text: "Exit Program"
+                        on_press: root.close_app()
+
+<ByteWrite>:
+    name: "byte_write"
+    BoxLayout:
+        orientation: "vertical"
+        size: root.width, root.height
+        spacing: "10dp"
+
+        Label:
+            id: view_list
+            text: "
+            text: "I believe that banking instituions are more dangerous to\n our liberties than standing armies \n ~Thomas Jefferson"
+            bold: True
+            outline_color: (0,1,0)
+            outline_width: 5
+            color: (0,0,0)
+            font_size: 24
+        MDBoxLayout:
+            orientation: "horizontal"
+            adaptive_height: True
+            padding: "20dp"
+            spacing: "20dp"
+            md_bg_color: 0.29, 0.29, .29, 0.2
+
+            MDBoxLayout:
+                orientation: "vertical"
+                adaptive_height: True
+                padding: "10dp"
+                spacing: "10dp"
+
+                MDTextField:
+                    id: addr1
+                    hint_text: "Enter first byte of address"
+                    helper_text: "Hex value max value 0xFF"
+                MDTextField:
+                    id: addr2
+                    hint_text: "Enter second byte of address"
+                MDTextField:
+                    id: data
+                    hint_text: "Enter one byte of data"
+            MDBoxLayout:
+                padding: "10dp"
+                spacing: "10dp"
+
+                MDLabel:
+                    id: result
+                    text: ""
+                    halign: "center"
+                    color: 1, 0.34, 0.133, 1.0
+                    font_size: 45
+
+        MDBoxLayout:
+            orientation: "horizontal"
+            padding: "20dp"
+            spacing: "20dp"
+
+            MDBoxLayout:
+                orientation: "vertical"
+                padding: "20dp"
+                spacing: "20dp"
+
+                MDRectangleFlatButton:
+                    text: "Write Byte"
+                    on_press: root.serial_writebyte()
+                MDRectangleFlatButton:
+                    text: "Read Byte"
+                    on_press: root.serial_readbyte()
+            MDBoxLayout:
+                padding: "20dp"
+                spacing: "20dp"
+
+                MDRectangleFlatButton:
+                    text: "Clear Fields"
+                    on_press: root.clear_text()
+                MDRectangleFlatButton:
+                    id: back_submit
+                    text: "Back"
+                    on_press: app.root.current = "mainwindow"
+
+<CurrentAddr>:
+    name: "curr_addr"
+    BoxLayout:
+        orientation: "vertical"
+        size: root.width, root.height
+
+        Label:
+            id: view_list
+            text: "Hello"
+        Button:
+            text: "View List"
+            on_press: root.view()
+        Button:
+            id: back_submit
+            text: "Back"
+            on_press: app.root.current = "mainwindow"
+
+<SequentialRead>:
+    name: "seq_read"
+    BoxLayout:
+        orientation: "vertical"
+        size: root.width, root.height
+        spacing: "10dp"
+
+        Label:
+            id: view_list
+            text: "I guess the definition of a lunatic\n is a man surrounded by them.\n ~Ezra Pound"
+            bold: True
+            outline_color: (0,1,0)
+            outline_width: 5
+            color: (0,0,0)
+            font_size: 32
+        MDBoxLayout:
+            orientation: "horizontal"
+            adaptive_height: True
+            padding: "10dp"
+            spacing: "10dp"
+            MDBoxLayout:
+                orientation: "vertical"
+                adaptive_height: True
+                padding: "10dp"
+                spacing: "10dp"
+               # md_bg_color: 0, 1, 0, 1
+
+                MDTextField:
+                    id: addr1
+                    hint_text: "Enter first byte of address"
+                    helper_text: "Hex value max value 0x10"
+                MDTextField:
+                    id: addr2
+                    hint_text: "Enter second byte of address"
+                MDTextField:
+                    id: loops
+                    hint_text: "Enter how many reads to perform per 32 bytes"
+                    helper_text: " Interger Max value 128"
+                    max_text_length: 3
+
+            MDBoxLayout:
+                orientation: "vertical"
+                padding: "10dp"
+                spacing: "10dp"
+               # md_bg_color: 1, 0, 0, 1
+
+                MDLabel:
+                    id: result
+                    text: ""
+                    halign: "center"
+                    color: 1, 0.34, 0.133, 1.0
+                    font_size: 45
+
+        MDBoxLayout:
+            orientation: "horizontal"
+            padding: "20dp"
+            spacing: "20dp"
+
+            MDBoxLayout:
+                orientation: "vertical"
+                padding: "20dp"
+                spacing: "20dp"
+
+                MDRectangleFlatButton:
+                    text: "Read Bytes"
+                    on_press: root.button_press()
+                    on_release: root.serial_readbyte()
+            MDBoxLayout:
+                padding: "20dp"
+                spacing: "20dp"
+
+                MDRectangleFlatButton:
+                    text: "Clear Fields"
+                    on_press: root.clear_text()
+                MDRectangleFlatButton:
+                    id: back_submit
+                    text: "Back"
+                    on_press: app.root.current = "mainwindow"
+
+
+
+<PageWrite>:
+    name: "page_write"
+    BoxLayout:
+        orientation: "vertical"
+        size: root.width, root.height
+        spacing: "10dp"
+
+        Label:
+            id: view_list
+            text: "Freedom is the freedom to say that two plus two make four.\n If that is granted, all else follows. ~ George Orwell, 1984"
+            bold: True
+            outline_color: (0,1,0)
+            outline_width: 5
+            color: (0,0,0)
+            font_size: 28
+        MDBoxLayout:
+            orientation: "horizontal"
+            adaptive_height: True
+            padding: "10dp"
+            spacing: "10dp"
+           # md_bg_color: 0, 0, 1, 1
+            MDBoxLayout:
+                orientation: "vertical"
+                adaptive_height: True
+                padding: "10dp"
+                spacing: "10dp"
+               # md_bg_color: 0, 1, 0, 1
+
+                MDTextField:
+                    id: addr1
+                    hint_text: "Enter first byte of address"
+                MDTextField:
+                    id: addr2
+                    hint_text: "Enter second byte of address"
+                MDTextField:
+                    id: data
+                    hint_text: "Enter one byte of data"
+                MDTextField:
+                    id: loops
+                    hint_text: "Enter how many reads to perform per 32 bytes"
+                    helper_text: " Interger Max value 128"
+                    max_text_length: 3
+
+            MDBoxLayout:
+                orientation: "vertical"
+                padding: "10dp"
+                spacing: "10dp"
+               # md_bg_color: 1, 0, 0, 1
+
+                MDLabel:
+                    id: result
+                    text: ""
+                    halign: "center"
+                    color: 1, 0.34, 0.133, 1.0
+                    font_size: 45
+
+
+        MDBoxLayout:
+            orientation: "horizontal"
+            padding: "20dp"
+            spacing: "20dp"
+
+            MDBoxLayout:
+                orientation: "vertical"
+                padding: "20dp"
+                spacing: "20dp"
+
+                MDRectangleFlatButton:
+                    text: "Write Bytes"
+                    on_press: root.writing()
+                    on_release: root.serial_writebytes()
+            MDBoxLayout:
+                padding: "20dp"
+                spacing: "20dp"
+
+                MDRectangleFlatButton:
+                    text: "Clear Fields"
+                    on_press: root.clear_text()
+                MDRectangleFlatButton:
+                    id: back_submit
+                    text: "Back"
+                    on_press: app.root.current = "mainwindow"
+
+

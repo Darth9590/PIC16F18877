@@ -45,7 +45,7 @@ void I2C_Start(void){
     I2C_Idle_Check();
     SSP2CON2bits.SEN = 1;
     while(SSP2CON2bits.SEN == 1);
-    SPxIF_flag_polling();
+    //SPxIF_flag_polling();
 
 }
 
@@ -59,7 +59,7 @@ void I2C_Stop(void){
 
     I2C_Idle_Check();
     SSP2CON2bits.PEN = 1;
-    SPxIF_flag_polling();
+    //SPxIF_flag_polling();
 
 
 }
@@ -90,7 +90,7 @@ void I2C_Write(uint8_t I2C_data){
     I2C_Idle_Check();
     SSP2BUF = I2C_data;
     while(SSP2STATbits.BF == 1);
-    SPxIF_flag_polling();
+    //SPxIF_flag_polling();
 
 
     }
@@ -103,7 +103,7 @@ void I2C_Write(uint8_t I2C_data){
  * SSPxIF and BF are set.  Master sets ACK in ACKDT bit of CON2 and initiates the
  * ACK be setting ACKEN bit. */
 
-void I2C_Read(uint8_t *rx_data){
+void I2C_Single_Read(uint8_t *rx_data){
 
 
     SSP2CON2bits.RCEN = 1;
@@ -112,11 +112,40 @@ void I2C_Read(uint8_t *rx_data){
     *rx_data = SSP2BUF;
     I2C_Idle_Check();
     SSP2CON2bits.ACKEN = 1;
-    SSP2CON2bits.ACKDT = 0;
+    SSP2CON2bits.ACKDT = 1;
     SPxIF_flag_polling();
 
 
 }
+
+/* Name: I2C_Read
+ * Parameter: uint8_t
+ * Return: nothing
+ * Description: Function reads the data I2C. Load slave address to SSPxBUF. MMSP will shift
+ *  notACK to ACKSTAT CON2 register. Set the RCEN bit of CON2. After 8th edge,
+ * SSPxIF and BF are set.  Master sets ACK in ACKDT bit of CON2 and initiates the
+ * ACK be setting ACKEN bit. */
+
+void I2C_Continious_Read(uint8_t *rx_data, uint8_t count){
+
+
+    SSP2CON2bits.RCEN = 1;
+    while(SSP2STATbits.BF == 0);
+    SPxIF_flag_polling();
+    *rx_data = SSP2BUF;
+    I2C_Idle_Check();
+    SSP2CON2bits.ACKEN = 1;
+    if( count < 31 ){
+        SSP2CON2bits.ACKDT = 0;
+    }
+    else{
+        SSP2CON2bits.ACKDT = 1;
+    }
+    SPxIF_flag_polling();
+
+
+}
+
 
 /***************************************************************************
  ============================  Functions =============================
